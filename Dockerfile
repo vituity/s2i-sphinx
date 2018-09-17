@@ -14,3 +14,4 @@ RUN scl enable rh-python36 "pip3.6 install --upgrade pip" && \
     scl enable rh-python36 "pip3.6 install sphinx"
 
 COPY .s2i/bin/ ${STI_SCRIPTS_PATH}
+USER 1001
