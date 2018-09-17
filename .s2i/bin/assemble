@@ -1,0 +1,36 @@
+#!/bin/bash
+
+: ${CONTEXT_PATH:=}
+: ${MAKE_TARGET:=dirhtml}
+
+echo "---> Installing application source..."
+shopt -s dotglob
+cp -Rf /tmp/src/. ./
+
+echo "---> Building application from source..."
+if [[ -f requirements.txt ]]; then
+  echo "---> Installing dependencies ..."
+  export PATH=$HOME/.local/bin:$PATH
+  pip3.6 install --user -r requirements.txt
+fi
+
+if [[ -f Makefile ]]; then
+  echo "---> Installing application ..."
+  SPHINXBUILD=sphinx-build
+  [[ -f .local/bin/sphinx-build ]] && SPHINXBUILD=.local/bin/sphinx-build
+  make SPHINXBUILD=${SPHINXBUILD} BUILDDIR=.. ${MAKE_TARGET}
+
+  # copy all to a known fixed named dir
+  mkdir -p ../build
+  mv ../${MAKE_TARGET}/* ../build
+fi
+
+echo "---> Clean build cache ..."
+rm -rf .cache .local doctrees ./*
+# remove pip temporary directory
+rm -rf /tmp/pip_build_default
+
+# Fix source directory permissions
+fix-permissions ./
+# set permissions for any installed artifacts
+fix-permissions /opt/app-root
