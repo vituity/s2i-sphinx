@@ -3,7 +3,7 @@ FROM centos/s2i-core-centos7
 EXPOSE 8080
 
 LABEL io.openshift.expose-services="8080:http" \
-      io.openshift.tags="builder,sphinx"
+      io.openshift.tags="builder,sphinx,python"
 
 RUN yum install -y centos-release-scl
 RUN yum install -y rh-python36 rh-nginx112
